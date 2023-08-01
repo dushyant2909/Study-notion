@@ -1,0 +1,10 @@
+npm install - 
+express
+nodemon
+mongoose
+dotenv
+cookie-parser
+jsonwebtoken
+nodemailer
+otp-generator
+bcrypt
