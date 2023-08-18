@@ -26,7 +26,7 @@ router.post('/signup', signUpController);
 //category routes
 router.post('/createCategory', auth, isAdmin, createCategoryController);
 router.get('/showAllCategories', showAllCategoriesController);
-router.get('/categoryDetails', categoryPageDetails);
+router.post('/categoryDetails', categoryPageDetails);
 
 //course routes
 router.post('/createCourse', auth, isInstructor, createCourse);

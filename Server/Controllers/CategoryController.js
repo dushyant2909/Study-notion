@@ -39,7 +39,12 @@ exports.createCategoryController = async (req, res) => {
 exports.showAllCategoriesController = async (req, res) => {
     try {
         //fetch all categories
-        const allCategories = await Categories.find({}, { name: true, description: true })//fetch all categories present having name and description value
+        const allCategories = await Categories.find({}).
+            populate({
+                path: "courses",
+                match: { status: "Published" },
+            }).
+            exec();
 
         return res.status(200).json({
             success: true,
@@ -72,9 +77,13 @@ exports.categoryPageDetails = async (req, res) => {
 
         //Get category details by id from db
         const selectedCategory = await Categories.findById(categoryId)
-            .populate('courses').exec();
-
-        console.log("Selected category details: ", selectedCategory);
+            .populate({
+                path: "courses",
+                match: { status: "Published" },
+                populate: { path: "instructor", select: "firstName lastName" }
+                // populate: "ratingAndReviews",
+            })
+            .exec()
 
         //Handle the case when category is null
         if (!selectedCategory) {
@@ -83,18 +92,6 @@ exports.categoryPageDetails = async (req, res) => {
                 message: "Category not found"
             });
         }
-
-        //Handle the case when there are no courses
-        if (selectedCategory.courses.length === 0) {
-            console.log('No courses found for this category');
-            return res.status(404).json({
-                success: false,
-                message: "No courses found for this category"
-            })
-        }
-
-        //get selected course id
-        const selectedCourses = selectedCategory.courses
 
         //Get courses for other categories
         const categoriesExceptSelected = await Categories.find(
@@ -114,14 +111,22 @@ exports.categoryPageDetails = async (req, res) => {
         const allCategories = await Categories.find().populate('courses');
         const allCourses = allCategories.flatMap((category) => category.courses);
         const mostSellingCourses = allCourses
+            .filter(course => course.status === "Published")
             .sort((a, b) => b.sold - a.sold)
             .slice(0, 10);
 
+        // Populate instructor field for most selling courses
+        const mostSellingCoursesPopulated = await Categories.populate(mostSellingCourses, { path: "instructor", select: "firstName lastName" });
+
+        // Populate instructor field for different courses
+        const differentCoursesPopulated = await Categories.populate(differentCourses, { path: "instructor", select: "firstName lastName" });
+
         return res.status(200).json({
             success: true,
-            selectedCourses: selectedCourses,
-            differentCourses: differentCourses,
-            mostSellingCourses: mostSellingCourses
+            categoryDetails: selectedCategory,
+            allCourses: allCourses,
+            differentCourses: differentCoursesPopulated,
+            mostSellingCourses: mostSellingCoursesPopulated
         });
     }
     catch (error) {

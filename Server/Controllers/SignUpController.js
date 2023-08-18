@@ -120,7 +120,7 @@ exports.signUpController = async (req, res) => {
             //otp not found
             return res.status(400).json({
                 success: false,
-                message: "OTP not found"
+                message: "OTP not found, it has expired"
             });
         }
         else if (otp !== recentOtp[0].otp) {

@@ -62,7 +62,7 @@ const otpTemplate = (otp) => {
                 <p>Thank you for registering with StudyNotion. To continue further please use the following One Time
                     Password (OTP) to veriy your account</p>
                 <h2 class="highlight">${otp}</h2>
-                <p>This otp is only valid for 5 minutes. Once your account is verified, you will have access to our platform
+                <p>This otp is only valid for 10 minutes. Once your account is verified, you will have access to our platform
                     and its features</p>
             </div>
             <div class="support">If you have any query or need further assistance, feel free to reach us at

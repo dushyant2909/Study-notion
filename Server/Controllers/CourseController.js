@@ -9,7 +9,7 @@ exports.createCourse = async (req, res) => {
     try {
         //since u are creating a course so logged in
         //fetch data
-        const { courseName, courseDescription, whatYouWillLearn, price, category } = req.body;
+        const { courseName, courseDescription, whatYouWillLearn, price, category, status } = req.body;
         const thumbnail = req.files.thumbnail;
 
         if (!courseName || !courseDescription || !whatYouWillLearn || !price || !category) {
@@ -60,7 +60,8 @@ exports.createCourse = async (req, res) => {
             // ratingAndReviews,
             price,
             thumbnail: thumbnailImage.secure_url,
-            category
+            category,
+            status,
             // tag: tagDetails,
         });
 
@@ -75,10 +76,16 @@ exports.createCourse = async (req, res) => {
             { new: true }
         );
 
-        console.log("updated instructor details: ", userCourseUpdate);
-
         //update Category schema
-        //h.w. yet to do
+        const categoryCourseSectionUpdate = await Category.findOneAndUpdate(
+            { _id: category },
+            {
+                $push: {
+                    courses: newCourse._id
+                }
+            },
+            { new: true }
+        )
 
         return res.status(200).json({
             success: true,
