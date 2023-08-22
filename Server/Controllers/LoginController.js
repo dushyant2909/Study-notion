@@ -63,7 +63,7 @@ exports.loginController = async (req, res) => {
                 // Send the token and user details in the response
                 return res.cookie("token", token, options).status(200).json({
                     success: true,
-                    message: "Login successful",
+                    message: "Login successfully",
                     token,
                     user: userObject // Send user details without the password
                 });

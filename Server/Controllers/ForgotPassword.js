@@ -26,7 +26,7 @@ exports.forgotPasswordController = async (req, res) => {
         if (!userExist) {
             return res.status(401).json({
                 success: false,
-                message: "User not found"
+                message: `This Email: ${email} is not Registered With Us Enter a Valid Email `,
             })
         }
 

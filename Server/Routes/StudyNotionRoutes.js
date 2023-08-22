@@ -6,13 +6,13 @@ const { createCategoryController, showAllCategoriesController, categoryPageDetai
 const { createCourse, getAllCourses, getCourseDetails, deleteSelectedCourse } = require('../Controllers/CourseController');
 const { forgotPasswordController, resetPasswordController } = require('../Controllers/ForgotPassword');
 const { loginController } = require('../Controllers/LoginController');
-const { createPaymentOrder, verifyRazorpaySignature } = require('../Controllers/PaymentsController');
+const { createPaymentOrder, verifyRazorpaySignature, sendPaymentSuccessEmail } = require('../Controllers/PaymentsController');
 const { createProfile, deleteAccount, getProfileDetails, updateDisplayPicture } = require('../Controllers/ProfileController');
 const { createRating, getAverageRating, getAllRatings } = require('../Controllers/RatingController');
 const { createSection, updateSection, deleteSection } = require('../Controllers/SectionController');
 const { sendOTP, signUpController } = require('../Controllers/SignUpController');
 const { createSubSection, updateSubSection, deleteSubSection } = require('../Controllers/SubSectionController');
-const { auth, isAdmin, isInstructor } = require('../Middleware/AuthMiddleware');
+const { auth, isAdmin, isInstructor, isStudent } = require('../Middleware/AuthMiddleware');
 
 //login route
 router.post('/login', loginController);
@@ -31,7 +31,7 @@ router.post('/categoryDetails', categoryPageDetails);
 //course routes
 router.post('/createCourse', auth, isInstructor, createCourse);
 router.get('/allCourses', getAllCourses);
-router.get('/courseDetails', getCourseDetails);
+router.post('/courseDetails', getCourseDetails);
 router.delete('/deleteCourse', auth, isInstructor, deleteSelectedCourse);
 
 //forgotpassword routes
@@ -39,8 +39,9 @@ router.post('/forgotPassword', forgotPasswordController);
 router.post('/resetPassword', resetPasswordController);
 
 //payment routes
-router.post('/createPayment', createPaymentOrder);
-router.post('/verifySignature', verifyRazorpaySignature);
+router.post('/createPayment', auth, isStudent, createPaymentOrder);
+router.post('/verifySignature', auth, isStudent, verifyRazorpaySignature);
+router.post('/sendPaymentSuccessMail', auth, isStudent, sendPaymentSuccessEmail);
 
 //profile routes
 router.put('/updateProfile', auth, createProfile);

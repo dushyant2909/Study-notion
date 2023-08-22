@@ -76,11 +76,11 @@ exports.sendOTP = async (req, res) => {
 exports.signUpController = async (req, res) => {
     try {
         // Fetch data
-        const { firstName, lastName, email, phoneNumber, password, confirmPassword, accountType, otp } = req.body;
+        const { firstName, lastName, email, password, confirmPassword, accountType, otp } = req.body;
         //otp will be provided by user for validation in req.body
 
         //Check if details present
-        if (!firstName || !lastName || !email || !phoneNumber || !password || !confirmPassword || !otp) {
+        if (!firstName || !lastName || !email || !password || !confirmPassword || !otp) {
             return res.status(403).send({
                 success: false,
                 message: "All fields are required for signup"
@@ -120,7 +120,7 @@ exports.signUpController = async (req, res) => {
             //otp not found
             return res.status(400).json({
                 success: false,
-                message: "OTP not found, it has expired"
+                message: "Invalid OTP"
             });
         }
         else if (otp !== recentOtp[0].otp) {
@@ -162,12 +162,11 @@ exports.signUpController = async (req, res) => {
             firstName,
             lastName,
             email,
-            phoneNumber,
             password: hashedPassword,
             accountType,
             approved,
             additionalDetails: createProfile._id,
-            image: `https://api.dicebear.com/5.x/initials/svg?seed=${firstName} ${lastName}`,
+            image: `https://api.dicebear.com/5.x/initials/svg?seed=${firstName}%20${lastName}`,
         });
 
         //Send response
